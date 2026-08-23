@@ -909,7 +909,7 @@ class WebsocketServer (threading.Thread):
         gen = WebsocketServer.get_gen(path)
 
         if path.startswith(WebsocketServer.trade_link_str):
-            if processer in link_rooms[gen][identifier]:
+            if (identifier < len(link_rooms[gen])) and (processer in link_rooms[gen][identifier]):
                 link_rooms[gen][identifier].remove(processer)
             if processer is not None and processer.other_ws is not None:
                 other = processer.other
@@ -920,7 +920,7 @@ class WebsocketServer (threading.Thread):
                 await other.own_ws.close()
 
         if path.startswith(WebsocketServer.battle_link_str):
-            if processer in battle_rooms[gen][identifier]:
+            if (identifier < len(battle_rooms[gen])) and (processer in battle_rooms[gen][identifier]):
                 battle_rooms[gen][identifier].remove(processer)
             if processer is not None and processer.other_ws is not None:
                 other = processer.other
