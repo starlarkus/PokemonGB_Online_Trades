@@ -13,6 +13,7 @@ from .gsc_trading_data_utils import GSCUtilsMisc
 
 class BGBLinkCableSender(threading.Thread):
     SLEEP_TIMER = 0.1
+    SLEEP_TIMER_FAST = 0.015
     SLEEP_TIMER_TURBO = 0.01
     def __init__(self, server, connection):
         threading.Thread.__init__(self)
@@ -28,6 +29,8 @@ class BGBLinkCableSender(threading.Thread):
                     self._connection.send(send_data)
                 if self._server.turbo_transfer:
                     sleep_timer = BGBLinkCableSender.SLEEP_TIMER_TURBO
+                elif self._server.fast:
+                    sleep_timer = BGBLinkCableSender.SLEEP_TIMER_FAST
                 else:
                     sleep_timer = BGBLinkCableSender.SLEEP_TIMER
                 sleep(sleep_timer)
@@ -40,7 +43,6 @@ class BGBLinkCableSender(threading.Thread):
 class BGBLinkCableServer(threading.Thread):
     PACKET_FORMAT = '<4BI'
     PACKET_SIZE_BYTES = 8
-    SLEEP_TIMER = 0.01
 
     def __init__(self, data_handler, menu, kill_function, very_verbose=False):
         threading.Thread.__init__(self)
@@ -62,6 +64,7 @@ class BGBLinkCableServer(threading.Thread):
         self.host = menu.emulator[0]
         self.port = menu.emulator[1]
         self.kill_function = kill_function
+        self.fast = menu.fast_emu_conn
         self.to_send = None
         self.last_offset = 0
         self.mask = 0x7FFFFFFF

@@ -10,10 +10,12 @@ import datetime
 
 class PokeTrader:
     SLEEP_TIMER = 0.01
+    SLEEP_TIMER_FAST = 0.001
     TIMEOUT_TIMER = 1
 
     def __init__(self, menu):
         self.curr_recv = None
+        self.fast = menu.fast_emu_conn
         self._server = BGBLinkCableServer(self.update_data, menu, kill_function)
         self.connection = get_connection(menu, kill_function)
 
@@ -24,7 +26,10 @@ class PokeTrader:
     def update_data(self, data):
         start_time = datetime.datetime.now()
         while self.curr_recv is not None:
-            sleep(self.SLEEP_TIMER)
+            sleep_time = self.SLEEP_TIMER
+            if self.fast:
+                sleep_time = self.SLEEP_TIMER_FAST
+            sleep(sleep_time)
             if (datetime.datetime.now() - start_time).total_seconds() >= self.TIMEOUT_TIMER:
                 break
         self.curr_recv = data
@@ -36,7 +41,10 @@ class PokeTrader:
             self._server.to_send = byte_to_send & 0xFF
             start_time = datetime.datetime.now()
             while self._server.to_send is not None:
-                sleep(self.SLEEP_TIMER)
+                sleep_time = self.SLEEP_TIMER
+                if self.fast:
+                    sleep_time = self.SLEEP_TIMER_FAST
+                sleep(sleep_time)
                 if (datetime.datetime.now() - start_time).total_seconds() >= self.TIMEOUT_TIMER:
                     break
             byte_to_send = byte_to_send >> 8
@@ -47,7 +55,10 @@ class PokeTrader:
         for i in range(num_bytes):
             start_time = datetime.datetime.now()
             while self.curr_recv is None:
-                sleep(self.SLEEP_TIMER)
+                sleep_time = self.SLEEP_TIMER
+                if self.fast:
+                    sleep_time = self.SLEEP_TIMER_FAST
+                sleep(sleep_time)
                 if (datetime.datetime.now() - start_time).total_seconds() >= self.TIMEOUT_TIMER:
                     self.curr_recv = 0
                     break

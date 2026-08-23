@@ -461,7 +461,7 @@ class RSESPTradingPokémonInfo(GSCTradingPokémonInfo):
                 return True
         return False
     
-    def is_equal(self, other, weak=False):
+    def is_equal(self, other, weak=False, all_values = False):
         """
         The protocol itself will figure this out.
         """

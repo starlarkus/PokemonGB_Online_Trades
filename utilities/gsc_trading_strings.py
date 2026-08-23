@@ -16,6 +16,8 @@ class GSCTradingStrings:
     unset_japanese_str = "Set game as International (Current: Japanese)"
     set_egg_str = "Convert received Pokémon to eggs (Current: Do nothing)"
     unset_egg_str = "Don't convert received Pokémon to eggs (Current: Turn to Eggs)"
+    set_efc_str = "Use fast emulator connection (Current: Slow)"
+    unset_efc_str = "Use slow emulator connection (Current: Fast)"
     unset_japanese_str = "Set game as International (Current: Japanese)"
     active_sanity_checks_str = "Disable Sanity checks (Current: Enabled)"
     inactive_sanity_checks_str = "Enable Sanity checks (Current: Disabled)"
@@ -142,7 +144,8 @@ class GSCTradingStrings:
     battle_turn_time_option_str = ("btt) Time between turns: {battle_turn_time}\n")
     emulator_options_str = ("\n\n=============== Emulator Options ===============\n"
                             "10) Host for emulator connection: {emulator_host}\n"
-                            "11) Port for emulator connection: {emulator_port}"
+                            "11) Port for emulator connection: {emulator_port}\n"
+                            "12) {efc_str}"
                             )
     
     def int_to_three_str(integer):
@@ -232,6 +235,13 @@ class GSCTradingStrings:
         if options.egg:
             egg_str = GSCTradingStrings.unset_egg_str
         return GSCTradingStrings.gen_2_eggify_str.format(egg_str=egg_str)
+    
+    def get_efc_str(options):
+        if not options.is_emulator:
+            return ""
+        if options.fast_emu_conn:
+            return GSCTradingStrings.unset_efc_str
+        return GSCTradingStrings.set_efc_str
 
     def get_battle_turn_time_option_str(options):
         if not options.gen == 2:
@@ -241,7 +251,7 @@ class GSCTradingStrings:
     def get_emulator_str(options):
         if not options.is_emulator:
             return ""
-        return GSCTradingStrings.emulator_options_str.format(emulator_host=options.emulator[0], emulator_port=options.emulator[1])
+        return GSCTradingStrings.emulator_options_str.format(emulator_host=options.emulator[0], emulator_port=options.emulator[1], efc_str=GSCTradingStrings.get_efc_str(options))
         
     def options_menu_print(options):
         print(GSCTradingStrings.options_menu_str.format(server_host=options.server[0], server_port=options.server[1],

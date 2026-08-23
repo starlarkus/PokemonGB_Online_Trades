@@ -28,6 +28,7 @@ class GSCTradingMenu:
         self.multiboot = False
         if is_emulator:
             self.emulator = [args.emulator_host, args.emulator_port]
+            self.fast_emu_conn = args.fast_emu_conn
         self.do_sanity_checks = args.do_sanity_checks
         self.kill_on_byte_drops = args.kill_on_byte_drops
         self.verbose = args.verbose
@@ -67,6 +68,7 @@ class GSCTradingMenu:
         if is_emulator:
             self.options_menu_handlers["10"] = self.handle_emulator_host_option
             self.options_menu_handlers["11"] = self.handle_emulator_port_option
+            self.options_menu_handlers["12"] = self.handle_fast_emu_conn_option
 
     def get_int(self, default_value):
         x = input()
@@ -215,6 +217,10 @@ class GSCTradingMenu:
         self.emulator[0] = input()
         return False
     
+    def handle_fast_emu_conn_option(self):
+        self.fast_emu_conn = not self.fast_emu_conn
+        return False
+    
     def handle_buffered_option(self):
         self.buffered = not self.buffered
         return False
@@ -292,6 +298,9 @@ class GSCTradingMenu:
                                 help="emulator's local host")
             parser.add_argument("-ep", "--emulator_port", dest="emulator_port", default = self.default_emulator[1],
                                 help="emulator's local port", type=int)
+            parser.add_argument("-efc", "--emu_fast_conn", action="store_true",
+                                dest="fast_emu_conn", default=False,
+                                help="enables fast emulator connection")
         return parser.parse_args()
 
 class GSCBufferedNegotiator(threading.Thread):
